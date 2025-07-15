@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const AppointmentModel = require("../models/Appointment ");
+const AppointmentModel = require("../models/Appointment");
 
 // GET only available appointments
 router.get("/", async (req, res) => {

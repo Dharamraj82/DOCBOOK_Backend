@@ -24,10 +24,12 @@ const doctorSchema = new mongoose.Schema({
   },
   phone: String,
   address: String,
-  imageUrl :{
-    type:String,
-    default:"default.jpg"
+  imageUrl: {
+    type: String,
+    default:
+      "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGRvY3RvcnxlbnwwfHwwfHx8MA%3D%3D",
   },
+
   gender: {
     type: String,
     enum: ["male", "female", "other"],

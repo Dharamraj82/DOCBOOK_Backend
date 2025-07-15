@@ -1,4 +1,4 @@
-const AppointmentModel = require("../models/Appointment ");
+const AppointmentModel = require("../models/Appointment");
 const DoctorModel = require("../models/Doctor");
 
 // Create available appointment slot
@@ -60,10 +60,16 @@ const updateAppointmentStatus = async (req, res) => {
     const appointmentId = req.params.id;
     const { doctorId, status } = req.body;
 
+    console.log("Appointment ID:", appointmentId);
+    console.log("Doctor ID:", doctorId);
+    console.log("Status:", status);
+
     const appointment = await AppointmentModel.findOne({
       _id: appointmentId,
-      doctorId,
+      doctorId: doctorId, // let Mongoose convert
     });
+
+    console.log("Fetched Appointment:", appointment);
 
     if (!appointment) {
       return res
@@ -71,12 +77,18 @@ const updateAppointmentStatus = async (req, res) => {
         .json({ message: "Appointment not found", success: false });
     }
 
-    appointment.status = status;
+    appointment.status = status.toLowerCase();
     await appointment.save();
 
-    res.status(200).json({ message: "Appointment updated", success: true });
+    return res.status(200).json({
+      message: "Appointment status updated successfully",
+      success: true,
+      appointment,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
 
@@ -88,7 +100,7 @@ const deleteAppointment = async (req, res) => {
 
     const appointment = await AppointmentModel.findOneAndDelete({
       _id: appointmentId,
-      doctorId,
+      doctorId: doctorId,
     });
 
     if (!appointment) {
@@ -99,6 +111,8 @@ const deleteAppointment = async (req, res) => {
 
     res.status(200).json({ message: "Appointment deleted", success: true });
   } catch (err) {
+    console.log(err);
+
     res.status(500).json({ message: "Server Error", error: err });
   }
 };
@@ -112,7 +126,6 @@ const getDoctorProfile = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
-
     res.status(200).json({ success: true, doctor });
   } catch (err) {
     res.status(500).json({ message: "Server Error", error: err });
@@ -123,7 +136,7 @@ const getDoctorProfile = async (req, res) => {
 const updateDoctorProfile = async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const { name, phone, gender, specialization, experience } = req.body;
+    const { phone, address } = req.body;
 
     const doctor = await DoctorModel.findById(doctorId);
 
@@ -134,24 +147,16 @@ const updateDoctorProfile = async (req, res) => {
       });
     }
 
-    // Update allowed fields only
-    if (name) doctor.name = name;
     if (phone) doctor.phone = phone;
-    if (gender) doctor.gender = gender;
-    if (specialization) doctor.specialization = specialization;
-    if (experience) doctor.experience = experience;
+    if (address) doctor.address = address;
 
     await doctor.save();
-
-    res.status(200).json({
-      message: "Doctor profile updated successfully",
-      success: true,
-      data: doctor,
-    });
-
+    console.log(doctor);
+    
     res
       .status(200)
-      .json({ message: "Profile updated", success: true, doctor: updated });
+      .json({ message: "Profile updated", success: true, doctor});
+      
   } catch (err) {
     res.status(500).json({ message: "Server Error", error: err });
   }
@@ -163,5 +168,5 @@ module.exports = {
   updateAppointmentStatus,
   deleteAppointment,
   getDoctorProfile,
-  //   updateDoctorProfile,
+  updateDoctorProfile,
 };
