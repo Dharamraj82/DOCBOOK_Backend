@@ -136,29 +136,30 @@ const getDoctorProfile = async (req, res) => {
 const updateDoctorProfile = async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const { phone, address } = req.body;
+    const updateData = req.body;
 
-    const doctor = await DoctorModel.findById(doctorId);
+    const updatedDoctor = await DoctorModel.findByIdAndUpdate(
+      doctorId,
+      updateData,
+      { new: true } // Return the updated document
+    );
 
-    if (!doctor) {
-      return res.status(404).json({
-        message: "Doctor not found",
-        success: false,
-      });
+    if (!updatedDoctor) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Doctor not found" });
     }
 
-    if (phone) doctor.phone = phone;
-    if (address) doctor.address = address;
-
-    await doctor.save();
-    console.log(doctor);
-    
-    res
-      .status(200)
-      .json({ message: "Profile updated", success: true, doctor});
-      
+    res.status(200).json({
+      success: true,
+      message: "Doctor profile updated successfully",
+      updatedDoctor,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Server Error", error: err });
+    console.error("Update error:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: err });
   }
 };
 
