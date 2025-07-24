@@ -6,7 +6,7 @@ const AppointmentModel = require("../models/Appointment");
 router.get("/", async (req, res) => {
   try {
     const availableAppointments = await AppointmentModel.find({ status: "available" })
-      .populate("doctorId", "name email specialization address imageUrl experience gender")
+      .populate("doctorId", "name email specialization address imageUrl experience gender phone")
       .populate("patientId", "name email phone");
 
     res.status(200).json({
