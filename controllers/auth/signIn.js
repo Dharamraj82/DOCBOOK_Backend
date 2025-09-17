@@ -10,7 +10,7 @@ const patientSignIn = async (req, res) => {
 
     const patient = await PatientModel.findOne({ email });
     if (!patient) {
-      return res.status(403).json({
+      return res.status(404).json({
         message: "Patient not found",
         success: false,
       });
@@ -26,7 +26,7 @@ const patientSignIn = async (req, res) => {
     const jwttoken = jwt.sign(
       { email: patient.email, _id: patient._id },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "7day" }
     );
 
     res.status(200).json({

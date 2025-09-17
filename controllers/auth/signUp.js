@@ -27,12 +27,12 @@ const patientSignup = async (req, res) => {
     });
 
     await newPatient.save();
-    res.status(201).json({
+    res.status(200).json({
       message: "Patient Registered Sucessfully Please Login",
       success: true,
     });
   } catch (err) {
-    res.status(500).json({ message: "Internal Server Error", err });
+    res.status(404).json({ message: "Internal Server Error", err });
   }
 };
 

@@ -11,7 +11,7 @@ const signUpValidation = (req, res, next) => {
 
   const { error } = schema.validate(req.body);
   if (error) {
-    return res.status(400).json({ message: "Bad request", error });
+    return res.status(404).json({ message: "Bad request", error });
   }
   next();
 };
@@ -47,7 +47,7 @@ const loginValidation = (req, res, next) => {
   next();
 };
 
-// Password Update Validation
+// Password Update Validation // if you forgotten the password
 const passwordUpdateValidation = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(3).max(100).required(),
